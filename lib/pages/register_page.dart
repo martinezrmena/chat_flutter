@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:chat_app/widgets/boton_azul.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:chat_app/widgets/labels.dart';
 import 'package:chat_app/widgets/logo.dart';
 import 'package:chat_app/widgets/custom_input.dart';
+import 'package:provider/provider.dart';
+
+import '../helpers/mostrar_alerta.dart';
+import '../services/auth_service.dart';
 
 
 
@@ -65,6 +69,9 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    
+    final authService = Provider.of<AuthService>(context);
+    
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric( horizontal: 50 ),
@@ -94,12 +101,30 @@ class __FormState extends State<_Form> {
            
 
            BotonAzul(
-             text: 'Ingrese',
-             onPressed: () {
-               print( emailCtrl.text );
-               print( passCtrl.text );
-             },
-           )
+            text: 'Crear cuenta',
+            onPressed: authService.autenticando
+                ? () => {}
+                : () async {
+                    print(nameCtrl.text);
+                    print(emailCtrl.text);
+                    print(passCtrl.text);
+                    final registroOk = await authService.register(
+                        nameCtrl.text.trim(),
+                        emailCtrl.text.trim(),
+                        passCtrl.text.trim());
+
+                    if (registroOk == true) {
+                      //  TODO: Conectar socket server
+                      Navigator.pushReplacementNamed(context, 'usuarios');
+                    } else {
+                      mostrarAlerta(
+                        context, 
+                        'Registro incorrecto', 
+                        registroOk,
+                      );
+                    }
+                  },
+          )
 
 
 
