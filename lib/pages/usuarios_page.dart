@@ -45,7 +45,7 @@ class UsuariosPageState extends State<UsuariosPage> {
               AuthService.deleteToken();
             },
           ),
-          actions: <Widget>[
+          actions: [
             Container(
               margin: const EdgeInsets.only(right: 10),
               child: Icon(Icons.check_circle, color: Colors.blue[400]),
